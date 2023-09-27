@@ -314,6 +314,12 @@ class CalendarController extends AbstractCompatibilityController
         $limit = 100,
         $sort = 'ASC'
     ) {
+        if ($this->request->hasArgument('format')) {
+            if ('html' != $this->request->getArgument('format')) {
+                return $this->return404Page();
+            }
+        }
+
         $this->addCacheTags(['calendarize_past']);
 
         $limit = (int)($this->settings['limit']);
@@ -335,6 +341,12 @@ class CalendarController extends AbstractCompatibilityController
      */
     public function yearAction($year = null)
     {
+        if ($this->request->hasArgument('format')) {
+            if ('html' != $this->request->getArgument('format')) {
+                return $this->return404Page();
+            }
+        }
+
         $this->addCacheTags(['calendarize_year']);
 
         // use the thrid day, to avoid time shift problems in the timezone
@@ -365,6 +377,12 @@ class CalendarController extends AbstractCompatibilityController
      */
     public function quarterAction(int $year = null, int $quarter = null)
     {
+        if ($this->request->hasArgument('format')) {
+            if ('html' != $this->request->getArgument('format')) {
+                return $this->return404Page();
+            }
+        }
+
         $this->addCacheTags(['calendarize_quarter']);
 
         $quarter = DateTimeUtility::normalizeQuarter($quarter);
@@ -393,13 +411,27 @@ class CalendarController extends AbstractCompatibilityController
      */
     public function monthAction($year = null, $month = null, $day = null)
     {
+        if ($this->request->hasArgument('format')) {
+            if ('html' != $this->request->getArgument('format')) {
+                return $this->return404Page();
+            }
+        }
+
         $this->addCacheTags(['calendarize_month']);
+        $arguments = $this->request->getArguments();
 
         $date = DateTimeUtility::normalizeDateTime($day, $month, $year);
         $now = DateTimeUtility::getNow();
         $useCurrentDate = $now->format('Y-m') === $date->format('Y-m');
-        if ($useCurrentDate) {
-            $date = $now;
+
+        if (isset($arguments['index'])) {
+            /** @var Index $index */
+            $index = $this->indexRepository->findByUid($arguments['index']);
+            $date = $index->getStartDate();
+        } else {
+            if ($useCurrentDate) {
+                $date = $now;
+            }
         }
 
         if ($this->isDateOutOfTypoScriptConfiguration($date)) {
@@ -425,6 +457,12 @@ class CalendarController extends AbstractCompatibilityController
      */
     public function weekAction(?int $year = null, ?int $week = null)
     {
+        if ($this->request->hasArgument('format')) {
+            if ('html' != $this->request->getArgument('format')) {
+                return $this->return404Page();
+            }
+        }
+
         $this->addCacheTags(['calendarize_week']);
 
         $now = DateTimeUtility::getNow();
@@ -470,6 +508,12 @@ class CalendarController extends AbstractCompatibilityController
      */
     public function dayAction($year = null, $month = null, $day = null)
     {
+        if ($this->request->hasArgument('format')) {
+            if ('html' != $this->request->getArgument('format')) {
+                return $this->return404Page();
+            }
+        }
+
         $this->addCacheTags(['calendarize_day']);
 
         $date = DateTimeUtility::normalizeDateTime($day, $month, $year);

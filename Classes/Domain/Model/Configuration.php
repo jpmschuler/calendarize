@@ -125,6 +125,7 @@ class Configuration extends AbstractModel implements ConfigurationInterface
      * @var ObjectStorage<ConfigurationGroup>
      *
      * @DatabaseField("\TYPO3\CMS\Extbase\Persistence\ObjectStorage")
+     *
      * @TYPO3\CMS\Extbase\Annotation\ORM\Lazy
      */
     protected $groups;
@@ -216,6 +217,15 @@ class Configuration extends AbstractModel implements ConfigurationInterface
      * @var bool
      */
     protected $hidden = false;
+
+    /**
+     * Flexform.
+     *
+     * @var string
+     *
+     * @DatabaseField("string")
+     */
+    protected $flexForm = '';
 
     /**
      * Configuration constructor.
@@ -699,5 +709,21 @@ class Configuration extends AbstractModel implements ConfigurationInterface
         $this->hidden = $hidden;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFlexForm(): string
+    {
+        return $this->flexForm;
+    }
+
+    /**
+     * @param string $flexForm
+     */
+    public function setFlexForm(string $flexForm): void
+    {
+        $this->flexForm = $flexForm;
     }
 }
